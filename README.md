@@ -60,8 +60,7 @@ Grasp-Anything:
 Prepare a deterministic 1000-sample cross-scene subset:
 
 ```bash
-PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+PYTHONNOUSERSITE=1 python \
   research/scripts/prepare_training_subset.py \
   --positive-dir /mnt/data/grasp-anything-lgd/data/processed/grasp-anything-pp/grasp_label_positive/grasp_label_positive \
   --instruction-dir /mnt/data/grasp-anything-lgd/data/processed/grasp-anything-pp/grasp_instructions/grasp_instructions \
@@ -81,8 +80,7 @@ Extract only the needed RGB files:
 Clean LGDM baseline:
 
 ```bash
-TRANSFORMERS_OFFLINE=1 HF_HUB_OFFLINE=1 PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+TRANSFORMERS_OFFLINE=1 HF_HUB_OFFLINE=1 PYTHONNOUSERSITE=1 python \
   research/scripts/train_lgdm_clean.py \
   --stems-tsv research/smoke-data/train_subset_1000.tsv \
   --out outputs/lgdm_exp1000/none \
@@ -93,8 +91,7 @@ TRANSFORMERS_OFFLINE=1 HF_HUB_OFFLINE=1 PYTHONNOUSERSITE=1 \
 LSAR (final proposed method, fixed residual scale):
 
 ```bash
-TRANSFORMERS_OFFLINE=1 HF_HUB_OFFLINE=1 PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+TRANSFORMERS_OFFLINE=1 HF_HUB_OFFLINE=1 PYTHONNOUSERSITE=1 python \
   research/scripts/train_lgdm_clean.py \
   --stems-tsv research/smoke-data/train_subset_10k.tsv \
   --out outputs/lgdm_10k/lambda_aff_0.05 \
@@ -112,8 +109,7 @@ second training seed with `--seed 43 --split-seed 42`.
 Repeat 10-step sampling evaluation on a saved checkpoint:
 
 ```bash
-PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+PYTHONNOUSERSITE=1 python \
   research/scripts/eval_lgdm_checkpoint.py \
   --checkpoint outputs/lgdm_exp1000/lsar_tuned/last.pt \
   --stems-tsv research/smoke-data/train_subset_1000.tsv \
@@ -124,8 +120,7 @@ PYTHONNOUSERSITE=1 \
 Render GT (green) and predicted (red) grasp rectangles:
 
 ```bash
-PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+PYTHONNOUSERSITE=1 python \
   research/scripts/visualize_lgdm_samples.py \
   --checkpoint outputs/lgdm_exp1000/lsar_tuned/last.pt \
   --stems-tsv research/smoke-data/train_subset_1000.tsv \
@@ -135,8 +130,7 @@ PYTHONNOUSERSITE=1 \
 Render the paired LGDM vs LSAR qualitative figure used in the paper:
 
 ```bash
-PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+PYTHONNOUSERSITE=1 python \
   research/scripts/visualize_lgdm_paired.py \
   --baseline-checkpoint outputs/lgdm_10k/none/last.pt \
   --lsar-checkpoint outputs/lgdm_10k/lsar_no_aff/last.pt \
@@ -148,8 +142,7 @@ The current final-method figure can be reproduced with the `lambda_aff=0.05`
 checkpoint:
 
 ```bash
-PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+PYTHONNOUSERSITE=1 python \
   research/scripts/visualize_lgdm_paired.py \
   --baseline-checkpoint outputs/lgdm_10k/none/last.pt \
   --lsar-checkpoint outputs/lgdm_10k/lambda_aff_0.05/last.pt \
@@ -160,8 +153,7 @@ PYTHONNOUSERSITE=1 \
 Run a deterministic sampling-step sensitivity subset:
 
 ```bash
-PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+PYTHONNOUSERSITE=1 python \
   research/scripts/eval_lgdm_checkpoint.py \
   --checkpoint outputs/lgdm_10k/lsar_no_aff/last.pt \
   --stems-tsv research/smoke-data/train_subset_10k.tsv \
@@ -173,8 +165,7 @@ PYTHONNOUSERSITE=1 \
 Summarize all saved `eval_metrics.json`:
 
 ```bash
-PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+PYTHONNOUSERSITE=1 python \
   research/scripts/summarize_experiments.py outputs/lgdm_exp1000
 ```
 
