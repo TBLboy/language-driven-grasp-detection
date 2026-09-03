@@ -10,7 +10,7 @@ diffusion baseline 的工程链路：
 ```bash
 HF_ENDPOINT=https://hf-mirror.com \
 PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+python \
   research/scripts/diffusion_smoke.py \
   --max-stems 2 \
   --sample-steps 10 \
@@ -52,7 +52,7 @@ Run commands:
 
 ```bash
 PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+python \
   research/scripts/train_lgdm_clean.py \
   --stems-tsv research/smoke-data/train_subset_1000.tsv \
   --out outputs/lgdm_exp1000/lsar_tuned \
@@ -65,7 +65,7 @@ Repeated evaluation and qualitative rendering:
 
 ```bash
 PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+python \
   research/scripts/eval_lgdm_checkpoint.py \
   --checkpoint outputs/lgdm_exp1000/lsar_tuned/last.pt \
   --stems-tsv research/smoke-data/train_subset_1000.tsv \
@@ -73,7 +73,7 @@ PYTHONNOUSERSITE=1 \
   --repeats 3 --start-seed 100
 
 PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+python \
   research/scripts/visualize_lgdm_samples.py \
   --checkpoint outputs/lgdm_exp1000/lsar_tuned/last.pt \
   --stems-tsv research/smoke-data/train_subset_1000.tsv \
@@ -94,7 +94,7 @@ Prepare the larger subset with the RGB scene list from the local archive:
 
 ```bash
 PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+python \
   research/scripts/prepare_training_subset.py \
   --positive-dir /mnt/data/grasp-anything-lgd/data/processed/grasp-anything-pp/grasp_label_positive/grasp_label_positive \
   --instruction-dir /mnt/data/grasp-anything-lgd/data/processed/grasp-anything-pp/grasp_instructions/grasp_instructions \
@@ -113,7 +113,7 @@ affordance overlay is in `outputs/lgdm_5k/visuals_affordance/qualitative.png`.
 
 ```bash
 PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+python \
   research/scripts/prepare_training_subset.py \
   --positive-dir /mnt/data/grasp-anything-lgd/data/processed/grasp-anything-pp/grasp_label_positive/grasp_label_positive \
   --instruction-dir /mnt/data/grasp-anything-lgd/data/processed/grasp-anything-pp/grasp_instructions/grasp_instructions \
@@ -132,7 +132,7 @@ PYTHONNOUSERSITE=1 \
 
 ```bash
 TRANSFORMERS_OFFLINE=1 HF_HUB_OFFLINE=1 PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+python \
   research/scripts/train_lgdm_clean.py \
   --stems-tsv research/smoke-data/train_subset_100.tsv \
   --out outputs/train_lgdm_clean_100 \
@@ -152,7 +152,7 @@ TRANSFORMERS_OFFLINE=1 HF_HUB_OFFLINE=1 PYTHONNOUSERSITE=1 \
 
 ```bash
 TRANSFORMERS_OFFLINE=1 HF_HUB_OFFLINE=1 PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+python \
   research/scripts/lgdm_tensorflow_debug.py \
   --out outputs/lgdm_tensorflow_debug_official.json
 ```
@@ -161,7 +161,7 @@ TRANSFORMERS_OFFLINE=1 HF_HUB_OFFLINE=1 PYTHONNOUSERSITE=1 \
 
 ```bash
 TRANSFORMERS_OFFLINE=1 HF_HUB_OFFLINE=1 PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+python \
   research/scripts/lgdm_tensorflow_debug.py \
   --inject-y \
   --out outputs/lgdm_tensorflow_debug_inject_y.json
@@ -184,7 +184,7 @@ LSAR V1 实现在 `models/lgdm_lsar.py`，不改官方 `LGD-main` 文件：
 
 ```bash
 TRANSFORMERS_OFFLINE=1 HF_HUB_OFFLINE=1 PYTHONNOUSERSITE=1 \
-/home/tbl/miniforge3/envs/grasp-lgd/bin/python \
+python \
   research/scripts/train_lgdm_clean.py \
   --stems-tsv research/smoke-data/train_subset_100.tsv \
   --out outputs/lgdm_exp100/lsar_scale01 \
