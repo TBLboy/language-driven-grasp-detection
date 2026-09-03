@@ -1,0 +1,20 @@
+torch 2.13.0+cu130
+torchvision 0.28.0+cu130
+cuda available True
+numpy 2.2.6
+scipy 1.15.3
+matplotlib 3.10.9
+PIL 12.2.0
+cv2 5.0.0
+skimage 0.25.2
+tqdm 4.70.0
+regex 2026.7.19
+ftfy 6.3.1
+transformers 4.28.1
+timm 0.6.13
+ruamel.yaml 0.17.21
+tensorboardX 2.6.5
+torchsummary 1.5.1
+HF mirror endpoint https://hf-mirror.com
+BERT cache ~/.cache/huggingface/hub/models--bert-base-uncased
+CLIP cache ~/.cache/clip/ViT-B-32.pt

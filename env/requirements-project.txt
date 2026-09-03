@@ -1,0 +1,16 @@
+# Core project dependencies for the LGDM diffusion baseline and LSAR.
+# Install torch/torchvision separately from the CUDA wheel index:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+numpy
+scipy
+pillow
+matplotlib
+opencv-python-headless
+scikit-image
+openai-clip==1.0.1
+transformers==4.28.1
+timm==0.6.13
+ruamel.yaml==0.17.21
+ruamel.yaml.clib==0.2.15
+tensorboardX==2.6.5
+torchsummary==1.5.1
