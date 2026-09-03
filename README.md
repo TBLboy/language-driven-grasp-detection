@@ -81,7 +81,7 @@ Clean LGDM baseline:
 
 ```bash
 TRANSFORMERS_OFFLINE=1 HF_HUB_OFFLINE=1 PYTHONNOUSERSITE=1 python \
-  research/scripts/train_lgdm_clean.py \
+  train.py \
   --stems-tsv research/smoke-data/train_subset_1000.tsv \
   --out outputs/lgdm_exp1000/none \
   --epochs 20 --train-ratio 0.8 --batch-size 2 --eval-steps 10 \
@@ -92,7 +92,7 @@ LSAR (final proposed method, fixed residual scale):
 
 ```bash
 TRANSFORMERS_OFFLINE=1 HF_HUB_OFFLINE=1 PYTHONNOUSERSITE=1 python \
-  research/scripts/train_lgdm_clean.py \
+  train.py \
   --stems-tsv research/smoke-data/train_subset_10k.tsv \
   --out outputs/lgdm_10k/lambda_aff_0.05 \
   --epochs 15 --train-ratio 0.8 --batch-size 2 --eval-steps 10 \
@@ -110,7 +110,7 @@ Repeat 10-step sampling evaluation on a saved checkpoint:
 
 ```bash
 PYTHONNOUSERSITE=1 python \
-  research/scripts/eval_lgdm_checkpoint.py \
+  evaluate.py \
   --checkpoint outputs/lgdm_exp1000/lsar_tuned/last.pt \
   --stems-tsv research/smoke-data/train_subset_1000.tsv \
   --out outputs/lgdm_exp1000/lsar_tuned_repeat_eval \
@@ -121,7 +121,7 @@ Render GT (green) and predicted (red) grasp rectangles:
 
 ```bash
 PYTHONNOUSERSITE=1 python \
-  research/scripts/visualize_lgdm_samples.py \
+  inference.py \
   --checkpoint outputs/lgdm_exp1000/lsar_tuned/last.pt \
   --stems-tsv research/smoke-data/train_subset_1000.tsv \
   --out outputs/lgdm_exp1000/visuals --n-samples 6
@@ -154,7 +154,7 @@ Run a deterministic sampling-step sensitivity subset:
 
 ```bash
 PYTHONNOUSERSITE=1 python \
-  research/scripts/eval_lgdm_checkpoint.py \
+  evaluate.py \
   --checkpoint outputs/lgdm_10k/lsar_no_aff/last.pt \
   --stems-tsv research/smoke-data/train_subset_10k.tsv \
   --out outputs/lgdm_10k/sensitivity/lsar_no_aff_50.json \
@@ -271,6 +271,9 @@ full 2000-sample repeated evaluation above. The final row uses
 ## Repository Layout
 
 ```text
+train.py                             top-level training entry point
+evaluate.py                          top-level repeated evaluation entry point
+inference.py                         top-level sample inference/visualization
 models/lgdm_lsar.py                LSAR conditioning variants
 research/scripts/train_lgdm_clean.py
 research/scripts/eval_lgdm_checkpoint.py
