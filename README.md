@@ -296,5 +296,12 @@ docs/technical-investigation-report.md
 
 ## Paper
 
-The final submission is a 2-page CVPR-style English paper. The GitHub
-repository link will be included in the paper when the repository is published.
+The final submission is a 2-page CVPR-style English paper.
+
+- Public repository: <https://github.com/TBLboy/language-driven-grasp-detection>
+- Paper source: [`research/paper/main.tex`](research/paper/main.tex)
+- Compiled two-page PDF: [`research/paper/main.pdf`](research/paper/main.pdf)
+
+Before emailing the final PDF to HR, copy `research/paper/main.pdf` to
+`FirstName_LastName.pdf` and replace the placeholder author name in `main.tex`
+with the actual name.
