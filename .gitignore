@@ -14,5 +14,6 @@ outputs/
 logs/
 research/smoke-data/image_scenes_full.txt
 research/smoke-data/*.log
+CVPR_2026_Submission_Template.zip
 
 .DS_Store

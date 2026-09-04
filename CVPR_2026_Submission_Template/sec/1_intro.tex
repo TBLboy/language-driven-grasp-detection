@@ -1,0 +1,28 @@
+\section{Introduction}
+\label{sec:intro}
+
+Language-driven grasp detection requires predicting a five-parameter grasp
+rectangle
+\begin{equation}
+  G=(x, y, w, h, \theta)
+  \label{eq:grasp}
+\end{equation}
+for the object or part selected by a free-form instruction.  We start from the
+diffusion-based LGDM formulation.  In its released code, the vision-language
+fusion output is computed but not injected into the grasp decoder, and the
+diffusion loss is not optimized.  We define a clean baseline that restores the
+diffusion objective and introduce LSAR, a compact residual module that makes
+the language condition spatially explicit.  The main contribution is the
+LSAR conditioning mechanism; the repaired baseline, repeated evaluations, and
+ablation are provided to make the effect reproducible and interpretable.
+
+\section{Related Work}
+Grasp detection methods based on dense quality, angle, and width maps
+\cite{morrison2018closing,kumra2020grconvnet} provide the representation used
+by many language-conditioned systems.  Language-driven Grasp Detection (LGD)
+\cite{vuong2024lgd} introduces Grasp-Anything++
+\cite{vuong2023graspanything} and a diffusion-based conditional model.
+Vision-language encoders such as ALBEF \cite{li2021albef} align semantic
+concepts but do not directly encode graspable regions.  Our module adapts the
+language-conditioned spatial branch without changing the pretrained encoders
+or the generative head.

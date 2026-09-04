@@ -1,0 +1,12 @@
+\begin{abstract}
+Language-driven grasp detection requires grounding a natural-language
+grasping instruction to a manipulable region in an RGB image.  We build on the
+official LGDM baseline and repair two implementation gaps: the ALBEF text
+condition is not connected to the grasp decoder, and the diffusion loss is not
+back-propagated.  We then propose LSAR, a lightweight spatial affordance
+refinement module that injects a small residual correction into the decoder
+bottleneck before grasp generation.  On a scene-disjoint 10{,}000-scene subset
+of Grasp-Anything++, LSAR improves repeated-evaluation correct grasps from
+$470.0$ to $678.0$ and $661.7$ under two training seeds, while preserving the
+official grasp representation and evaluation protocol.
+\end{abstract}

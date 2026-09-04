@@ -274,6 +274,7 @@ full 2000-sample repeated evaluation above. The final row uses
 train.py                             top-level training entry point
 evaluate.py                          top-level repeated evaluation entry point
 inference.py                         top-level sample inference/visualization
+Bolin_Tao.pdf                        final named submission PDF
 models/lgdm_lsar.py                LSAR conditioning variants
 research/scripts/train_lgdm_clean.py
 research/scripts/eval_lgdm_checkpoint.py
@@ -284,6 +285,7 @@ research/scripts/summarize_experiments.py
 research/scripts/prepare_training_subset.py
 research/scripts/extract_rgb_subset.sh
 research/assets/qualitative_lsar_tuned.png
+CVPR_2026_Submission_Template/       final paper in the official CVPR 2026 template
 LGD-main/                          official LGD baseline snapshot
 docs/technical-investigation-report.md
 ```
@@ -293,9 +295,8 @@ docs/technical-investigation-report.md
 The final submission is a 2-page CVPR-style English paper.
 
 - Public repository: <https://github.com/TBLboy/language-driven-grasp-detection>
-- Paper source: [`research/paper/main.tex`](research/paper/main.tex)
+- Author: Bolin Tao
+- Final submission PDF: [`Bolin_Tao.pdf`](Bolin_Tao.pdf)
+- Official CVPR template source:
+  [`CVPR_2026_Submission_Template/main.tex`](CVPR_2026_Submission_Template/main.tex)
 - Compiled two-page PDF: [`research/paper/main.pdf`](research/paper/main.pdf)
-
-Before emailing the final PDF to HR, copy `research/paper/main.pdf` to
-`FirstName_LastName.pdf` and replace the placeholder author name in `main.tex`
-with the actual name.
