@@ -3,8 +3,9 @@
 ## Final Paper in This Directory
 
 This directory contains the final assignment paper adapted to the official
-CVPR 2026 template. `main.tex` is the source, `main.pdf` is the compiled
-two-page paper, and `Bolin_Tao.pdf` is the named submission copy.
+CVPR 2026 template. `main.tex` is a self-contained source that includes the
+full paper content, `main.pdf` is the compiled two-page paper, and
+`Bolin_Tao.pdf` is the named submission copy.
 
 Compile:
 

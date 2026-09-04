@@ -1,9 +1,22 @@
 % CVPR 2026 Paper Template; see https://github.com/cvpr-org/author-kit
+% Self-contained final paper source for the language-driven grasp detection task.
 
 \documentclass[10pt,twocolumn,letterpaper]{article}
 
 \usepackage[final]{cvpr}
-\input{preamble}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{microtype}
+
+\setlength{\abovecaptionskip}{1pt}
+\setlength{\belowcaptionskip}{1pt}
+\setlength{\abovedisplayskip}{2pt}
+\setlength{\belowdisplayskip}{2pt}
+\setlength{\floatsep}{4pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{5pt plus 2pt minus 2pt}
+\setlength{\intextsep}{4pt plus 2pt minus 2pt}
 
 \definecolor{cvprblue}{rgb}{0.21,0.49,0.74}
 \usepackage[breaklinks,colorlinks,allcolors=cvprblue]{hyperref}
@@ -18,11 +31,164 @@
 
 \begin{document}
 \maketitle
-\input{sec/0_abstract}
-\input{sec/1_intro}
-\input{sec/2_method}
-\input{sec/3_experiments}
-\input{sec/4_conclusion}
+
+\begin{abstract}
+Language-driven grasp detection requires grounding a natural-language
+grasping instruction to a manipulable region in an RGB image.  We build on the
+official LGDM baseline and repair two implementation gaps: the ALBEF text
+condition is not connected to the grasp decoder, and the diffusion loss is not
+back-propagated.  We then propose LSAR, a lightweight spatial affordance
+refinement module that injects a small residual correction into the decoder
+bottleneck before grasp generation.  On a scene-disjoint 10{,}000-scene subset
+of Grasp-Anything++, LSAR improves repeated-evaluation correct grasps from
+$470.0$ to $678.0$ and $661.7$ under two training seeds, while preserving the
+official grasp representation and evaluation protocol.
+\end{abstract}
+
+\section{Introduction}
+Language-driven grasp detection requires predicting a five-parameter grasp
+rectangle
+\begin{equation}
+  G=(x, y, w, h, \theta)
+  \label{eq:grasp}
+\end{equation}
+for the object or part selected by a free-form instruction.  We start from the
+diffusion-based LGDM formulation.  In its released code, the vision-language
+fusion output is computed but not injected into the grasp decoder, and the
+diffusion loss is not optimized.  We define a clean baseline that restores the
+diffusion objective and introduce LSAR, a compact residual module that makes
+the language condition spatially explicit.  The main contribution is the
+LSAR conditioning mechanism; the repaired baseline, repeated evaluations, and
+ablation are provided to make the effect reproducible and interpretable.
+
+\section{Related Work}
+Grasp detection methods based on dense quality, angle, and width maps
+\cite{morrison2018closing,kumra2020grconvnet} provide the representation used
+by many language-conditioned systems.  Language-driven Grasp Detection (LGD)
+\cite{vuong2024lgd} introduces Grasp-Anything++
+\cite{vuong2023graspanything} and a diffusion-based conditional model.
+Vision-language encoders such as ALBEF \cite{li2021albef} align semantic
+concepts but do not directly encode graspable regions.  Our module adapts the
+language-conditioned spatial branch without changing the pretrained encoders
+or the generative head.
+
+\section{Method}
+\subsection{Problem Setup}
+An input sample is $(I,T)$, where $I$ is an RGB image and $T$ is a grasping
+instruction.  Ground-truth rectangles are converted into dense maps
+$\mathrm{pos}$, $\cos(2\theta)$, $\sin(2\theta)$, and normalized
+$\mathrm{width}$; post-processing decodes the predicted dense maps into a
+rectangle.
+
+\subsection{Clean LGDM Baseline}
+LGDM computes $y_{\mathrm{view}}\in\mathbb{R}^{8\times19\times19}$ with
+ALBEF, but the released decoder does not use it, and the upstream training
+script does not back-propagate the diffusion loss.  Our baseline keeps the
+official decoder structure and optimizes
+\begin{equation}
+  \mathcal{L}_{\mathrm{base}} =
+  \mathcal{L}_{\mathrm{diffusion}}
+  + \mathcal{L}_{\cos}
+  + \mathcal{L}_{\sin}
+  + \mathcal{L}_{\mathrm{width}}.
+  \label{eq:base}
+\end{equation}
+We also re-enable a raw ``plain-$y$'' injection into the GG-CNN decoder
+feature $F_v$ for the language-conditioning ablation.
+
+\subsection{LSAR}
+Semantic alignment does not identify which part of a target affords a grasp.
+LSAR combines the decoder feature with the language map and learns a small
+residual:
+\begin{align}
+  Z &= \mathrm{concat}\bigl(F_v,\ y_{\mathrm{view}}\bigr), \\
+  H &= \mathrm{ReLU}\bigl(\mathrm{conv}_{3\times3}(
+        \mathrm{GN}(\mathrm{ReLU}(
+          \mathrm{conv}_{3\times3}(Z))))\bigr), \\
+  \Delta &= s\,\mathrm{conv}_{1\times1}(H), \\
+  F' &= \mathrm{ReLU}\bigl(F_v+\Delta\bigr).
+\end{align}
+We fix $s=0.01$ to keep the residual perturbation small.  The module also
+emits a $19\times19$ affordance map
+$A=\mathrm{conv}_{1\times1}(H)$ for an auxiliary term studied below.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/architecture.pdf}
+\caption{Pipeline: ALBEF fusion, LSAR residual injection, GG-CNN decoding, and
+diffusion grasp generation.}
+\label{fig:arch}
+\end{figure}
+
+\subsection{Training Objective}
+The final objective is
+\begin{equation}
+  \mathcal{L}=\mathcal{L}_{\mathrm{base}}
+  + \lambda_{\mathrm{aff}}\,
+    \mathrm{MSE}\Bigl(A,\ \mathrm{AdaptiveAvgPool}_{19}(\mathrm{pos})\Bigr),
+  \label{eq:loss}
+\end{equation}
+with $\lambda_{\mathrm{aff}}=0.05$ in the final method.
+
+\section{Experiments}
+\subsection{Data and Protocol}
+We use 10{,}000 Grasp-Anything++ stems with one unique scene per stem and
+split 8{,}000 train / 2{,}000 validation with seed 42, so the split is
+scene-disjoint by construction.  All models train for 15 epochs, batch size 2,
+learning rate $10^{-3}$, weight decay $10^{-4}$, and evaluation uses 10-step
+respaced diffusion sampling.  A prediction is correct if it matches any
+ground-truth rectangle with IoU $>0.25$ and angle error $<30^\circ$.
+
+\begin{table}[t]
+\centering
+\caption{Repeated 10-step evaluation on 2{,}000 validation stems.  Final LSAR
+uses scale $0.01$ and $\lambda_{\mathrm{aff}}=0.05$.}
+\label{tab:main}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lccc}
+\toprule
+Method & $\lambda_{\mathrm{aff}}$ & Correct & Mean\,$\pm$\,Std \\
+\midrule
+LGDM baseline & --- & 449 & $470.0\pm10.8$ \\
+LSAR-no-aff & 0.0 & 643 & $653.7\pm6.5$ \\
+LSAR-full & 0.1 & 625 & $605.3\pm18.9$ \\
+LSAR (seed 42) & 0.05 & 686 & $\mathbf{678.0}\pm16.5$ \\
+LSAR (seed 43) & 0.05 & 666 & $661.7\pm14.0$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Results}
+Table~\ref{tab:main} reports one training-loop evaluation and the mean over
+three sampling evaluations.  The final method improves the baseline mean from
+$470.0$ to $678.0$ (seed 42) and $661.7$ (seed 43).  Removing the auxiliary
+affordance loss gives $653.7$; the larger weight $\lambda=0.1$ gives $605.3$.
+LSAR therefore contributes mainly through spatial conditioning, while the
+small affordance term is a useful auxiliary objective.  On a fixed
+200-sample subset, 50 instead of 10 diffusion steps improves the baseline from
+$39$ to $44$ correct and final LSAR from $65$ to $67$, preserving the ordering.
+
+Figure~\ref{fig:qual} shows paired part-level examples.  The conditioned model
+correctly locates a highlighter and keychain keys where the baseline fails and
+retains success on an apple-stem case.  This illustrates that the refinement
+improves spatial grounding rather than only global image semantics.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/qualitative_paper.png}
+\caption{Paired qualitative results: input, ground truth, LGDM prediction,
+LSAR prediction, and LSAR affordance map.}
+\label{fig:qual}
+\end{figure}
+
+\section{Conclusion}
+We present a compact and reproducible language-driven grasp detection system
+based on LGDM and LSAR.  The LSAR residual conditioning improves spatial
+grounding and consistently increases correct-grasp rate over the repaired
+baseline on a 10{,}000-scene Grasp-Anything++ subset.  Results are limited to
+a subset, 15 training epochs, and 10-step sampling; full-scale training and
+real-robot validation are left as future work.
 
 {\footnotesize
 \bibliographystyle{ieeenat_fullname}
